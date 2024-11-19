@@ -169,7 +169,8 @@ export class Carro {
             // retorna a lista de carros
             return listaDeCarros;
         } catch (error) {
-            console.log('Erro ao buscar lista de carros');
+            console.log('Erro ao buscar lista de carros. Verifique os logs para mais detalhes.');
+            console.log(error);
             return null;
         }
     }
@@ -220,6 +221,44 @@ export class Carro {
             // imprime o erro no console
             console.log(error);
             // retorno um valor falso
+            return false;
+        }
+    }
+
+    /**
+     * Remove um carro do banco de dados com base no ID fornecido.
+     *
+     * @param {number} idCarro - O ID do carro a ser removido.
+     * @returns {Promise<boolean>} - Retorna uma promessa que resolve para true se o carro foi removido com sucesso, ou false caso contrário.
+     *
+     * @throws {Error} - Lança um erro se ocorrer um problema durante a remoção do carro.
+     */
+    static async removerCarro(idCarro: number): Promise<boolean> {
+        try {
+            // cria uma query para deletar um objeto do banco de dados, passando como parâmetro o id do carro recebido na função
+            const queryDeleteCarro = `DELETE FROM carro WHERE id_carro = ${idCarro}`;
+        
+            // executar a query e armazenar a resposta do banco de dados
+            const respostaBD = await database.query(queryDeleteCarro);
+
+            // verifica se o número de linhas alteradas é diferente de 0
+            if(respostaBD.rowCount != 0) {
+                // exibe uma mensagem no console
+                console.log(`Carro removido com sucesso. ID removido: ${idCarro}`);
+                // retorna true, indicando que o carro foi removido
+                return true;
+            }
+
+            // retorna false, o que indica que a remoção não foi feita 
+            return false;
+
+        // trata qualquer erro que possa acontecer no caminho
+        } catch (error) {
+            // exibe uma mensagem de falha
+            console.log(`Erro ao remover carro. Verifique os logs para mais detalhes.`);
+            // imprime o erro no console da API
+            console.log(error);
+            // retorna false, o que indica que a remoção não foi feita
             return false;
         }
     }
